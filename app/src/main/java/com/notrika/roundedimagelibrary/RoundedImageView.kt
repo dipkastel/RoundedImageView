@@ -1,0 +1,145 @@
+package com.notrika.roundedimagelibrary
+
+import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.util.Log
+
+import androidx.appcompat.widget.AppCompatImageView
+
+import top.defaults.drawabletoolbox.DrawableBuilder
+
+
+class RoundedImageView : AppCompatImageView {
+    private var shape: Drawable? = null
+    private var radus: Float = 0.toFloat()
+
+    private var maskCanvas: Canvas? = null
+    private var maskBitmap: Bitmap? = null
+    private var maskPaint: Paint? = null
+
+    private var drawableCanvas: Canvas? = null
+    private var drawableBitmap: Bitmap? = null
+    private var drawablePaint: Paint? = null
+
+    constructor(context: Context) : super(context) {
+        setup(context, null, 0)
+    }
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        setup(context, attrs, 0)
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
+        setup(context, attrs, defStyle)
+    }
+
+    private fun setup(context: Context, attrs: AttributeSet?, defStyle: Int) {
+        if (attrs != null) {
+            val typedArray =
+                context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView, defStyle, 0)
+            radus = typedArray.getDimension(R.styleable.RoundedImageView_cornerRadus, 0f)
+            typedArray.recycle()
+        }
+
+        maskPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        shape = DrawableBuilder()
+            .rectangle()
+            .bottomLeftRadius(radus.toInt()) // in pixels
+            .bottomRightRadius(radus.toInt()) // in pixels
+            .topLeftRadius(radus.toInt()) // in pixels
+            .topRightRadius(radus.toInt()) // in pixel
+            .solidColor(Color.WHITE)
+            .solidColorPressed(Color.WHITE)
+            .build()
+
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        createMaskCanvas(w, h, oldw, oldh)
+    }
+
+    private fun createMaskCanvas(width: Int, height: Int, oldw: Int, oldh: Int) {
+        val sizeChanged = width != oldw || height != oldh
+        val isValid = width > 0 && height > 0
+        if (isValid && (maskCanvas == null || sizeChanged)) {
+            maskCanvas = Canvas()
+            maskBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            maskCanvas!!.setBitmap(maskBitmap)
+
+            maskPaint!!.reset()
+            if (shape != null) {
+                shape!!.setBounds(0, 0, width, height)
+                shape!!.draw(maskCanvas!!)
+            }
+            drawableCanvas = Canvas()
+            drawableBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            drawableCanvas!!.setBitmap(drawableBitmap)
+            drawablePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        }
+    }
+
+
+    override fun onDraw(canvas: Canvas) {
+        if (!isInEditMode) {
+            val saveCount = canvas.saveLayer(
+                0.0f,
+                0.0f,
+                width.toFloat(),
+                height.toFloat(),
+                null,
+                Canvas.ALL_SAVE_FLAG
+            )
+            try {
+                val drawable = drawable
+                if (drawable != null) {
+                    val imageMatrix = imageMatrix
+                    if (imageMatrix == null) {// && mPaddingTop == 0 && mPaddingLeft == 0) {
+                        drawable.draw(drawableCanvas!!)
+                    } else {
+                        val drawableSaveCount = drawableCanvas!!.saveCount
+                        drawableCanvas!!.save()
+                        drawableCanvas!!.concat(imageMatrix)
+                        drawable.draw(drawableCanvas!!)
+                        drawableCanvas!!.restoreToCount(drawableSaveCount)
+                    }
+
+                    drawablePaint!!.reset()
+                    drawablePaint!!.isFilterBitmap = false
+                    drawablePaint!!.xfermode = PORTER_DUFF_XFERMODE
+                    drawableCanvas!!.drawBitmap(maskBitmap!!, 0.0f, 0.0f, drawablePaint)
+                }
+
+                drawablePaint!!.xfermode = null
+                canvas.drawBitmap(drawableBitmap!!, 0.0f, 0.0f, drawablePaint)
+
+            } catch (e: Exception) {
+                val log = "Exception occured while drawing $id"
+                Log.e(TAG, log, e)
+            } finally {
+                canvas.restoreToCount(saveCount)
+            }
+        } else {
+            super.onDraw(canvas)
+        }
+    }
+
+    companion object {
+        private val TAG = RoundedImageView::class.java.simpleName
+
+        private val PORTER_DUFF_XFERMODE = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
+    }
+}
