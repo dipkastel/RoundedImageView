@@ -4,6 +4,7 @@
 [![platform](https://img.shields.io/badge/platform-android-brightgreen.svg)](https://developer.android.com/index.html)
 <a target="_blank" href="https://android-arsenal.com/api?level=14"><img src="https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat"></a>
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
+[![](https://jitpack.io/v/dipkastel/RoundedImageView.svg)](https://jitpack.io/#dipkastel/RoundedImageView)
 
 simple library to round images simple fastest way to round images
 
@@ -15,14 +16,45 @@ simple library to round images simple fastest way to round images
 
 ## Gradle
 
+
+Step 1. Add it in your root build.gradle at the end of repositories:
+
 ```
-dependencies {
-    implementation 'com.github.dipkastel:RoundedImageView:${latestVersion}'
-    ...
-}
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+Step 2. Add the dependency
+
+```
+	dependencies {
+	        implementation 'com.github.dipkastel:RoundedImageView:1.0.1'
+	}
 ```
 
-> Replace `${latestVersion}` with the latest version code. See [releases](https://github.com/dipkastel/RoundedImageView/releases).
+## Maven
+Step 1. Add the JitPack repository to your build file
+
+```
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```
+Step 2. Add the dependency
+```
+	<dependency>
+	    <groupId>com.github.dipkastel</groupId>
+	    <artifactId>RoundedImageView</artifactId>
+	    <version>Tag</version>
+	</dependency>
+```
+
 
 ## Usage
 
