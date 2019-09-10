@@ -1,6 +1,6 @@
 # RoundedImageView
-simple library to round images
-[![gitHub release](https://img.shields.io/badge/version-1.0.1-green)]
+
+[![gitHub release](https://img.shields.io/badge/version-1.0-green)](https://github.com/dipkastel/RoundedImageView)
 [![platform](https://img.shields.io/badge/platform-android-brightgreen.svg)](https://developer.android.com/index.html)
 <a target="_blank" href="https://android-arsenal.com/api?level=14"><img src="https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat"></a>
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
