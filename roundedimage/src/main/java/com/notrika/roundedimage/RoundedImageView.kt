@@ -1,20 +1,11 @@
-package com.notrika.roundedimagelibrary
+package com.notrika.roundedimage
 
 import android.content.Context
-import android.content.res.TypedArray
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
-
 import androidx.appcompat.widget.AppCompatImageView
-
 import top.defaults.drawabletoolbox.DrawableBuilder
 
 
@@ -119,7 +110,8 @@ class RoundedImageView : AppCompatImageView {
 
                     drawablePaint!!.reset()
                     drawablePaint!!.isFilterBitmap = false
-                    drawablePaint!!.xfermode = PORTER_DUFF_XFERMODE
+                    drawablePaint!!.xfermode =
+                        PORTER_DUFF_XFERMODE
                     drawableCanvas!!.drawBitmap(maskBitmap!!, 0.0f, 0.0f, drawablePaint)
                 }
 
